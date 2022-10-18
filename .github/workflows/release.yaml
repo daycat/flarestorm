@@ -1,0 +1,60 @@
+# workflow name
+name: Release
+
+# on events
+on:
+  push:
+    tags:
+      - 'v*'
+      # workflow tasks
+jobs:
+  generate:
+    name: Generate cross-platform builds
+    runs-on: ubuntu-latest
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+      - name: Get tag
+        uses: olegtarasov/get-tag@v2
+        id: tagName
+      - name: Get time
+        uses: gerred/actions/current-time@master
+        id: current-time
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Build files
+        uses: tobyxdd/go-cross-build@d00fc41eb205f57dd90f6e5af4613e21c7ebe73f
+        with:
+          platforms: 'darwin/amd64,darwin/arm64,linux/386,linux/amd64,linux/arm,linux/arm64,linux/mips,linux/mips64,linux/mips64le,linux/mipsle,linux/ppc64,linux/ppc64le,linux/riscv64,linux/s390x,windows/386,windows/amd64,windows/arm'
+          name: 'flarestorm'
+          compress: 'false'
+          dest: 'dist'
+      - name: Generate hashes
+        run: |
+          cd dist
+          for f in $(find . -type f); do
+            sha256sum $f | sudo tee -a hashes.txt
+          done
+      - name: Upload
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            ./dist/flarestorm-darwin-amd64
+            ./dist/flarestorm-darwin-arm64
+            ./dist/flarestorm-windows-amd64.exe
+            ./dist/flarestorm-windows-386.exe
+            ./dist/flarestorm-windows-arm.exe
+            ./dist/flarestorm-linux-amd64
+            ./dist/flarestorm-linux-386
+            ./dist/flarestorm-linux-arm
+            ./dist/flarestorm-linux-arm64
+            ./dist/flarestorm-linux-s390x
+            ./dist/flarestorm-linux-mipsle
+            ./dist/flarestorm-linux-mips64
+            ./dist/flarestorm-linux-mips
+            ./dist/flarestorm-linux-ppc64
+            ./dist/hashes.txt
