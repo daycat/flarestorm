@@ -2,7 +2,7 @@ package utils
 
 import (
 	"fmt"
-	"github.com/daycat/flarestorm/templates"
+	templates "github.com/daycat/flarestorm/templates"
 	"github.com/schollz/progressbar/v3"
 	"io/ioutil"
 	"net"

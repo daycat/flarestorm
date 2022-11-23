@@ -9,7 +9,8 @@ import (
 var rangeTxt string
 
 func main() {
-	utils.GetAllLocs(rangeTxt)
+	rs := utils.GetAllLocs(rangeTxt)
+	utils.Speedtest(rs)
 	/**
 	rs["HKG"] = templates.Loc{Name: "HKG", Avgping: 1, Avgspeed: 2}
 	entry, _ := rs["HKG"]
