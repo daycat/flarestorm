@@ -42,15 +42,15 @@ func getspeed(ip string) int64 {
 		Transport: &http.Transport{DialContext: getDialContext(ip)},
 	}
 
-	req, _ := http.NewRequest("GET", "https://speedtest.daycat.space/16m.bin", nil)
-	//req.Header.Add("Host", "speedtest.daycat.space")
+	req, _ := http.NewRequest("GET", "https://speedtest.daycat.space/20m.bin", nil)
 	timeNow := time.Now()
 	resp, err := client.Do(req)
-	print(resp.ContentLength)
 	if err != nil {
 		fmt.Println(err)
 		return -1
 	}
+	print(resp.ContentLength)
+
 	// defer res.Body.Close()
 	timeTaken := time.Since(timeNow)
 	//fmt.Println(timeTaken)
